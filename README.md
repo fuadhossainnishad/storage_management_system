@@ -1,4 +1,4 @@
-# 📁 File Management System - Backend
+# 📁 File Management System
 
 This is the backend of a **File Management System** built with **Node.js, Express, and MongoDB**. It provides APIs for user authentication, file upload, folder management, duplication, renaming, deletion, and favorite marking.
 
