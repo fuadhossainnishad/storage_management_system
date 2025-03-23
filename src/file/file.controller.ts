@@ -1,14 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import { tryCatchHandler } from "../middleware/tryCatchHandler";
 import {
+  deleteServices,
+  duplicateServices,
+  favouriteServices,
   folderCreateService,
   isExistService,
+  renameServices,
   specificFileStorageService,
   specificFindAllService,
 } from "./file.service";
 import File from "./file.model";
 import path from "path";
 import fs from "fs-extra";
+import { dateWiseStorageFindService } from './file.service';
 
 export const folderCreateController = tryCatchHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -107,5 +112,76 @@ export const openController = tryCatchHandler(
       return res.status(404).json({ message: "User not found" });
     }
 
+  }
+)
+
+export const favouriteController = tryCatchHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, filePath, isFolder, isFavourite } = req.body
+
+    if (!userId) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const favourite = await favouriteServices(userId, isFolder, isFavourite, filePath)
+    if (!favourite) {
+      return res.status(400).json({ message: "Marked file/folder as favourite failed" })
+    }
+    return res.status(400).json({ message: "Marked file/folder as favourite failed" })
+  }
+)
+
+export const renameController = tryCatchHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, isFolder, isFavourite, filePath, newFileName } = req.body
+    if (!userId) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const rename = await renameServices(userId, isFolder, isFavourite, filePath, newFileName)
+    if (!rename) {
+      res.status(404).json({ message: "Rename failed" });
+    }
+    res.status(200).json({ message: "Renamed successfully" })
+  }
+)
+
+export const duplicateController = tryCatchHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, isFolder, isFavourite, filePath } = req.body
+    if (!userId) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const duplicate = await duplicateServices(userId, isFolder, filePath, newFilePath, parentPath, newFileName)
+    if (!duplicate) {
+      res.status(404).json({ message: "Rename failed" });
+    }
+    res.status(200).json({ message: "Renamed successfully" })
+  }
+)
+
+export const deleteController = tryCatchHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, isFolder, isFavourite, filePath, newFilePath } = req.body
+    if (!userId) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const deleteFile = await deleteServices(userId, isFolder, isFavourite, filePath)
+    if (!deleteFile) {
+      res.status(404).json({ message: `${isFolder ? "Folder" : "File"} not be deleted` });
+    }
+    res.status(404).json({ message: `${isFolder ? "Folder" : "File"}  deleted successfully` });
+  }
+)
+
+export const dateWiseStorageFindController = tryCatchHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, date } = req.body
+    if (!userId) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const dateWiseFile = await dateWiseStorageFindService(userId, date)
+    if (!dateWiseFile) {
+      res.status(404).json({ message: "datewise file not found" });
+    }
+    res.status(404).json({ message: "datewise file  found", file: dateWiseFile });
   }
 )

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, text } from "express";
 import { tryCatchHandler } from "../middleware/tryCatchHandler";
 import {
+  editProfileService,
   findUserService,
   signupUserService,
   updatePasswordService,
@@ -8,6 +9,7 @@ import {
 import { otp } from "../lib/otp";
 import ResetCode from "../model/resetCode";
 import sendMail from "../utils/sendMail";
+import { renameServices } from "../file/file.service";
 
 export const userSignupController = tryCatchHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -63,3 +65,17 @@ export const updatePasswordController = tryCatchHandler(
     return res.status(200).json({ message: "password updated successfully" });
   }
 );
+
+export const editProfileController = tryCatchHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { uerId, newUserName, email } = req.body
+    if (!uerId) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const renameUser = await editProfileService(email, newUserName)
+    if (!renameUser) {
+      return res.status(404).json({ message: "user name doesn't changed" });
+    }
+    return res.status(200).json({ message: "Profile updated successfully" });
+  }
+)

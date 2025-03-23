@@ -7,6 +7,7 @@ import {
   signupSchema,
 } from "./auth.validation";
 import {
+  editProfileController,
   forgotPasswordController,
   updatePasswordController,
   userLoginController,
@@ -27,4 +28,5 @@ authRouter.post(
   validation(newPasswordSchema),
   updatePasswordController
 );
+authRouter.post("/editProfile", validation(loginSchema), editProfileController)
 export default authRouter;
