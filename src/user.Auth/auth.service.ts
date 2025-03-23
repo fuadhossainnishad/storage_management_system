@@ -34,3 +34,10 @@ export const updatePasswordService = async ({
   const updateUser = await user.save();
   return updateUser;
 };
+
+export const editProfileService = async (email: string, newUserName: string) => {
+  const findUser = await UserModel.findOne({ email })
+  if (!findUser) return null
+  const updateUserName = await UserModel.updateOne({ email }, { $set: { userName: newUserName } })
+  return updateUserName.matchedCount > 0 && updateUserName.modifiedCount > 0
+}

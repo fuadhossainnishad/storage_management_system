@@ -2,7 +2,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 import { decode, encode } from "../lib/hashing";
 
 export interface UserInterface extends Document {
-  name: string;
+  userName: string;
   email: string;
   password: string;
   isVerified: boolean;

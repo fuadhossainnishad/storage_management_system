@@ -1,3 +1,4 @@
+import fs from 'fs-extra';
 import File, { FileScemaInterface } from "./file.model";
 
 export const totalFileStorageService = async (userId: string) => {
@@ -58,9 +59,106 @@ export const specificFindAllService = async (
   return allfiles;
 };
 
+export const favouriteServices = async (
+  userId: string,
+  isFolder: boolean,
+  isFavourite: boolean,
+  filePath: string
+): Promise<boolean> => {
+  const allfiles = await isExistService(userId, filePath, isFolder);
+  if (!allfiles) {
+    return false;
+  }
+  const updateFavourite = await File.updateOne({ userId, filePath, isFolder }, { $set: { isFavourite: isFavourite } })
+  return updateFavourite.matchedCount > 0 && updateFavourite.modifiedCount > 0;
+};
+
+export const renameServices = async (
+  userId: string,
+  isFolder: boolean,
+  isFavourite: boolean,
+  filePath: string,
+  newFilePath: string
+): Promise<boolean> => {
+  const allfiles = await isExistService(userId, filePath, isFolder);
+  if (!allfiles) {
+    return false;
+  }
+  const rename = await File.updateOne({ userId, filePath, isFolder }, { $set: { filePath: newFilePath } })
+  return rename.matchedCount > 0 && rename.modifiedCount > 0;
+};
+
+export const duplicateServices = async (
+  userId: string,
+  isFolder: boolean,
+  filePath: string,
+  newFilePath: string,
+  parentPath: string,
+  newFileName: string
+): Promise<boolean> => {
+  const original = await isExistService(userId, filePath, isFolder);
+  if (!original) {
+    return false;
+  }
+  try {
+    if (!isFolder) {
+      const copyfile = await fs.copy(filePath, newFilePath)
+
+    }
+  } catch (error) {
+    console.error("Error copying file/folder on server:", error);
+    return false;
+  }
+  const duplicated = new File({
+    ...original.toObject(),
+    _id: undefined,
+    fileName: newFileName,
+    filePath: newFilePath,
+    updatedAt: new Date(),
+    createdAt: new Date(),
+    openedAt: new Date()
+  })
+
+  const saveDuplicate = await duplicated.save()
+  if (!saveDuplicate) {
+    try {
+      await fs.remove(newFilePath)
+    } catch (rollbackError) {
+      console.error("Error removing copied file/folder:", rollbackError);
+    }
+    return false
+  }
+
+
+  return true
+};
+
+export const deleteServices = async (
+  userId: string,
+  isFolder: boolean,
+  isFavourite: boolean,
+  filePath: string
+): Promise<boolean> => {
+  const allfiles = await isExistService(userId, filePath, isFolder);
+  if (!allfiles) {
+    return false;
+  }
+  const deleted = await File.deleteOne({ userId, filePath, isFolder })
+  if (deleted.deletedCount === 0) return false
+  return deleted.deletedCount > 0;
+};
+
+
 export const openService = async (userId: string, filePath: string, isFolder: boolean): Promise<boolean | null> => {
   const isExist = await isExistService(userId, filePath, isFolder)
   if (!isExist) return null
   const updateOPenedAt = await File.updateOne({ userId, filePath, isFolder }, { $set: { openedAt: new Date() } })
   return updateOPenedAt.matchedCount > 0 && updateOPenedAt.modifiedCount > 0;
 }
+
+export const dateWiseStorageFindService = async (userId: string, date: Date): Promise<FileScemaInterface[] | null> => {
+  const findAll = await File.find({ userId, date })
+  if (!findAll) return null
+  return findAll
+}
+

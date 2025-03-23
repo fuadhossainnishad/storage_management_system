@@ -9,7 +9,6 @@ import {
 import File from "./file.model";
 import path from "path";
 import fs from "fs-extra";
-import { specificFileStorageService } from "./file.service";
 
 export const folderCreateController = tryCatchHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -107,6 +106,6 @@ export const openController = tryCatchHandler(
     if (!userId) {
       return res.status(404).json({ message: "User not found" });
     }
-    
+
   }
 )
