@@ -93,7 +93,6 @@ export const duplicateServices = async (
   isFolder: boolean,
   filePath: string,
   newFilePath: string,
-  parentPath: string,
   newFileName: string
 ): Promise<boolean> => {
   const original = await isExistService(userId, filePath, isFolder);

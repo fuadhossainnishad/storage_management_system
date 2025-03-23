@@ -16,7 +16,10 @@ fileRouter.post("/folderCreate", folderCreateController);
 fileRouter.post("/upload", upload.single("file"), fileUploadController);
 fileRouter.patch('/', renameController)
 fileRouter.delete('/', deleteController)
+fileRouter.post('/copy', duplicateController)
 fileRouter.post('/duplicate', duplicateController)
 fileRouter.get('/dateWise', dateWiseStorageFindController)
-fileRouter.post('/favourite', favouriteController)
+fileRouter.patch('/favourite', favouriteController)
+
+
 export default fileRouter;

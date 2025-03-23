@@ -146,11 +146,13 @@ export const renameController = tryCatchHandler(
 
 export const duplicateController = tryCatchHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, isFolder, isFavourite, filePath } = req.body
+    const { userId, isFolder, filePath, fileName, parentPath } = req.body
     if (!userId) {
       return res.status(404).json({ message: "User not found" });
     }
-    const duplicate = await duplicateServices(userId, isFolder, filePath, newFilePath, parentPath, newFileName)
+    const newFileName = path.join('Copy', fileName)
+    const newFilePath = path.join(parentPath, newFileName)
+    const duplicate = await duplicateServices(userId, isFolder, filePath, newFilePath, parentPath)
     if (!duplicate) {
       res.status(404).json({ message: "Rename failed" });
     }
