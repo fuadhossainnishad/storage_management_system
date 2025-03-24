@@ -1,6 +1,7 @@
 import express from "express";
 import { validation } from "../middleware/validation";
 import {
+  editProfileSchema,
   forgotPasswordSchema,
   loginSchema,
   newPasswordSchema,
@@ -23,10 +24,10 @@ authRouter.post(
   validation(forgotPasswordSchema),
   forgotPasswordController
 );
-authRouter.post(
+authRouter.patch(
   "/updatepassword",
   validation(newPasswordSchema),
   updatePasswordController
 );
-authRouter.post("/editProfile", validation(loginSchema), editProfileController)
+authRouter.patch("/editProfile", validation(editProfileSchema), editProfileController)
 export default authRouter;
