@@ -11,5 +11,6 @@ const authRouter = express_1.default.Router();
 authRouter.post("/signup", (0, validation_1.validation)(auth_validation_1.signupSchema), auth_controller_1.userSignupController);
 authRouter.post("/login", (0, validation_1.validation)(auth_validation_1.loginSchema), auth_controller_1.userLoginController);
 authRouter.post("/forgotPassword", (0, validation_1.validation)(auth_validation_1.forgotPasswordSchema), auth_controller_1.forgotPasswordController);
-authRouter.post("/updatepassword", (0, validation_1.validation)(auth_validation_1.newPasswordSchema), auth_controller_1.updatePasswordController);
+authRouter.patch("/updatepassword", (0, validation_1.validation)(auth_validation_1.newPasswordSchema), auth_controller_1.updatePasswordController);
+authRouter.patch("/editProfile", (0, validation_1.validation)(auth_validation_1.editProfileSchema), auth_controller_1.editProfileController);
 exports.default = authRouter;

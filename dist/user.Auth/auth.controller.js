@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePasswordController = exports.forgotPasswordController = exports.userLoginController = exports.userSignupController = void 0;
+exports.editProfileController = exports.updatePasswordController = exports.forgotPasswordController = exports.userLoginController = exports.userSignupController = void 0;
 const tryCatchHandler_1 = require("../middleware/tryCatchHandler");
 const auth_service_1 = require("./auth.service");
 const otp_1 = require("../lib/otp");
@@ -57,4 +57,15 @@ exports.updatePasswordController = (0, tryCatchHandler_1.tryCatchHandler)((req, 
     const { email, newpassword } = req.body;
     const updatePass = yield (0, auth_service_1.updatePasswordService)({ newpassword, email });
     return res.status(200).json({ message: "password updated successfully" });
+}));
+exports.editProfileController = (0, tryCatchHandler_1.tryCatchHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { uerId, newUserName, email } = req.body;
+    if (!uerId) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    const renameUser = yield (0, auth_service_1.editProfileService)(email, newUserName);
+    if (!renameUser) {
+        return res.status(404).json({ message: "user name doesn't changed" });
+    }
+    return res.status(200).json({ message: "Profile updated successfully" });
 }));

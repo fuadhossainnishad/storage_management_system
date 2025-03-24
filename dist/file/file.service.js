@@ -78,7 +78,7 @@ const renameServices = (userId, isFolder, isFavourite, filePath, newFilePath) =>
     return rename.matchedCount > 0 && rename.modifiedCount > 0;
 });
 exports.renameServices = renameServices;
-const duplicateServices = (userId, isFolder, filePath, newFilePath, parentPath, newFileName) => __awaiter(void 0, void 0, void 0, function* () {
+const duplicateServices = (userId, isFolder, filePath, newFilePath, newFileName) => __awaiter(void 0, void 0, void 0, function* () {
     const original = yield (0, exports.isExistService)(userId, filePath, isFolder);
     if (!original) {
         return false;
